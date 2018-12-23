@@ -1,0 +1,21 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <title>无标题</title>
+</head>
+<body>
+  <canvas id="example" width="400"  height="400">浏览器不支持，请更换浏览器</canvas>
+</body>
+<script type="text/javascript">
+  function main(){
+    var canvas=document.getElementById('example');
+    if(!canvas){
+      return
+    }
+    var ctx=canvas.getContext('2d');
+    ctx.fillStyle='rgba(0.0,255,1.0)';
+    ctx.fillRect(120,10,150,150);
+  }
+main();
+</script>
+</html>

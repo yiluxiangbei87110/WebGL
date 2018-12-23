@@ -1,0 +1,64 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题</title>
+</head>
+
+<body>
+    <canvas id="webgl">不支持canvas</canvas>
+    <script src="lib/webgl-utils.js"></script>
+    <script src="lib/webgl-debug.js"></script>
+    <script src="lib/cuon-utils.js"></script>
+    <script type="text/javascript">
+    // 顶点着色器，设置坐标和设置尺寸。
+    var VSHADER_SOURCE =
+        `
+    void main(){
+      gl_Position=vec4(0.0,0.5,0.0,1.0);
+      gl_PointSize=10.0;
+    }
+    `
+
+    //片元着色器
+    var FSHADER_SOURCE =
+        `
+    void main(){
+        gl_FragColor=vec4(1.0,0.0,0.0,1.0);
+      }
+    `
+
+    function main() {
+        var canvas = document.getElementById('webgl');
+        var gl = getWebGLContext(canvas);
+        if (!gl) {
+            return;
+        }
+        //初始化着色器
+        if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+            return;
+        }
+        //设置背景色
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        // 清空canvas
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        // 绘制一个点 从第一个顶点(0)绘制一个点
+        gl.drawArrays(gl.POINTS, 0,1);
+    }
+    main();
+    </script>
+</body>
+
+</html>
+
+<!-- ### webGl着色器
+顶点着色器(Vertex shader)用来描述顶点特性（如位置、颜色等）的程序，通常是二维或者三维图形的端点或者焦点。
+片元着色器(Fragment shader)进行逐片处理如光照的程序，可以理解为像素（图像的单元）。
+
+### OpenGL ES着色器语言（GLSL ES）
+1. 强类型语言
+2. 内置变量 gl_Position(坐标)    gl_PointSize(尺寸)   gl_FragColor(颜色)
+3. gl_pointSize必须使用浮点型，gl_PointSize=10 会报错，必须10.0 
+4. gl_Position表示点的位置，类型为vec4，可以在最后加一个1.0,构成4个浮点数组成的矢量，使其变成齐次坐标。
+5. WebGL姑且认为是右手坐标系。 -->

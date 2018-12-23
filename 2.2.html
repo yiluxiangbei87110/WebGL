@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <title>无标题</title>
+</head>
+<body>
+  <canvas id="webgl">不支持canvas</canvas>
+  <script src="lib/webgl-utils.js"></script>
+  <script src="lib/webgl-debug.js"></script>
+  <script src="lib/cuon-utils.js"></script>
+  <script type="text/javascript">
+  // gl.clearColor(red,green,blue,alpha);范围均是0.0,1.0。
+  function main(){
+    //获取canvas元素
+    var canvas=document.getElementById('webgl');
+    // 获取wegGL绘图上下文
+    var gl=getWebGLContext(canvas);
+    if(!gl){
+      return;
+    }
+    // 是设置背景色,擦除已绘制的内容。
+    gl.clearColor(0.0,0.0,0.0,1.0);
+    // 清空颜色缓冲区
+    gl.clear(gl.COLOR_BUFFER_BIT);
+  }
+  main();
+  </script>
+</body>
+</html>

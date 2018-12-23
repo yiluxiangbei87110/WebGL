@@ -1,0 +1,111 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题</title>
+</head>
+
+<body>
+    <canvas id="webgl">不支持canvas</canvas>
+    <p>
+        使用缓冲区对象向顶点着色器传入多个顶点，一般需要这几个步骤
+        <br/> 1. 创建缓冲区对象gl.createBuffer()
+        <br/> 2. 绑定缓冲区对象gl.bindBuffer()
+        <br/> 3. 将数据写入缓冲区对象gl.bufferData()
+        <br/> 4. 将缓冲区对象分配给一个attribute对象gl.vertexAttribPointer();
+        <br/> 5. 开启attribute变量 gl.enableVertexAttribArray()
+        <br/>
+    </p>
+    <script src="lib/webgl-utils.js"></script>
+    <script src="lib/webgl-debug.js"></script>
+    <script src="lib/cuon-utils.js"></script>
+    <script type="text/javascript">
+        // 顶点着色器，设置坐标和设置尺寸。
+        var VSHADER_SOURCE =
+            `
+    attribute vec4 a_Position;
+    // attribute float a_PointSize;
+    void main(){
+      gl_Position=a_Position;
+    // 只在绘制单个点的时候才需要。
+    //   gl_PointSize=a_PointSize;
+    }
+    `
+
+        //片元着色器
+        var FSHADER_SOURCE =
+            `
+    void main(){
+        gl_FragColor=vec4(1.0,0.0,0.0,1.0);
+      }
+    `
+
+        function main() {
+            var canvas = document.getElementById('webgl');
+            var gl = getWebGLContext(canvas);
+            if (!gl) {
+                return;
+            }
+            //初始化着色器
+            if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+                return;
+            }
+
+            //必须初始化着色器后， 获取attribute变量的存储位置 getAttribLocation(program,name);
+            var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+
+            // // 获取大小的存储位置
+            // var a_PointSize = gl.getAttribLocation(gl.program, 'a_PointSize');
+
+            if (a_Position < 0) {
+                console.log('a_Position0');
+                return;
+            }
+            // // 将顶点位置传输给attribute
+            // gl.vertexAttrib3f(a_Position,0.0,0.0,.0,0);
+
+            // gl.vertexAttrib1f(a_PointSize, 20.0);
+
+            // 设置顶点位置，并返回数量
+            var n = initVertextBuffers(gl);
+            //设置背景色
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            // 清空canvas
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            // 绘制一个点 从第一个顶点绘制3个点
+            // gl.drawArrays(gl.POINTS, 0, n);
+
+            // 绘制三角形
+            gl.drawArrays(gl.TRIANGLES,0,n);
+        }
+        main();
+
+        function initVertextBuffers(gl) {
+            // Float32Array 类型化数组执行起来效率更快。 webGL类型化数组与普通数组不同，不支持pop，push方法。
+            var vertices = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
+            var n = 3;//点的个数
+            //创建缓冲区对象
+            var vertexBuffer = gl.createBuffer();
+            if (!vertexBuffer) {
+                console.log('Failed to create the buffer object');
+                return -1;
+            }
+
+            // 将缓冲区对象绑定到目标
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+            // 向缓冲区写入数据(只能写在目标)
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+            var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+
+            // 将缓冲区对象分配给a_Position变量
+            gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+
+            // 连接a_Position变量与分配给它的缓冲区对象
+            gl.enableVertexAttribArray(a_Position);
+            return n;
+        }
+    </script>
+</body>
+
+</html>
